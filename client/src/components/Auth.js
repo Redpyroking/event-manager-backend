@@ -22,6 +22,7 @@ function Auth({ setUser }) {
       const endpoint = isRegister ? '/api/auth/register' : '/api/auth/login';
       const res = await axios.post(`https://event-manager-backend-yfbq.onrender.com${endpoint}`, formData);
       localStorage.setItem('token', res.data.token);
+      console.log(endpoint,"<-endpoint")
       setUser({ email });
       navigate('/');
     } catch (error) {

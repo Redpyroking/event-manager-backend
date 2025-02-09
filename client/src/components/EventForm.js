@@ -40,6 +40,7 @@ function EventForm({ user }) {
       const eventData = { ...formData, imageUrl };
 
       const token = localStorage.getItem('token');
+      console.log("Token retrieved:", token);
       await axios.post('https://event-manager-backend-yfbq.onrender.com/api/events', eventData, {
         headers: { Authorization: `Bearer ${token}` }
       });
