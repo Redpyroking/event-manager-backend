@@ -9,7 +9,8 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, { cors: { origin: '*' } });
-
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = process.env.JWT_SECRET_KEY;
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -108,3 +109,19 @@ app.patch('/api/events/:id/attendees', verifyToken, async (req, res) => {
       res.status(500).json({ message: 'Error updating attendees', error: err.message });
   }
 });
+function verifyToken(req, res, next) {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (!token) {
+      return res.status(403).json({ message: 'Access denied' });
+  }
+
+  try {
+      const decoded = jwt.verify(token, SECRET_KEY);
+      req.user = decoded;
+      next();
+  } catch (err) {
+      res.status(401).json({ message: 'Invalid token' });
+  }
+}
+
+module.exports = verifyToken;
