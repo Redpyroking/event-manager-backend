@@ -8,12 +8,7 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: process.env.CLIENT_URL, // e.g., 'http://localhost:3000'
-    methods: ['GET', 'POST']
-  }
-});
+const io = socketIo(server, { cors: { origin: '*' } });
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 // Middleware
