@@ -8,7 +8,12 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, { cors: { origin: '*' } });
+const io = socketIo(server, {
+  cors: {
+    origin: process.env.CLIENT_URL, // e.g., 'http://localhost:3000'
+    methods: ['GET', 'POST']
+  }
+});
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 // Middleware
@@ -105,7 +110,11 @@ app.patch('/api/events/:id/attendees', verifyToken, async (req, res) => {
   const { id } = req.params;
   const { attendees } = req.body;
   try {
-      const updatedEvent = await Event.findByIdAndUpdate(id, { attendees }, { new: true });
+    const updatedEvent = await Event.findByIdAndUpdate(
+      id,
+      { $addToSet: { attendees: req.user._id } }, // Adds user ID if not present
+      { new: true }
+    );
 
       // Emit the 'attendeeUpdate' socket event to all clients
       io.emit('attendeeUpdate', { eventId: id, attendees: updatedEvent.attendees });
