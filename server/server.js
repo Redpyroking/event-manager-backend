@@ -3,7 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const dotenv = require('dotenv');
 const cors = require('cors');
-
+const Event = require('./models/Event'); 
 dotenv.config();
 
 const app = express();
@@ -19,9 +19,24 @@ app.use(cors());
 const connectDB = require('./config/db');
 connectDB();
 
-app.use('/api/upload', require('./routes/upload'));
+function verifyToken(req, res, next) {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (!token) {
+      return res.status(403).json({ message: 'Access denied' });
+  }
+
+  try {
+      const decoded = jwt.verify(token, SECRET_KEY);
+      req.user = decoded;
+      next();
+  } catch (err) {
+      res.status(401).json({ message: 'Invalid token' });
+  }
+}
+
 
 // Routes
+app.use('/api/upload', require('./routes/upload'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/events', require('./routes/events'));
 
@@ -32,15 +47,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log('Client disconnected: ', socket.id);
   });
-});
-
-// Make io accessible to routes
-app.set('socketio', io);
-
-// Start the server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
 });
 
 // Event Creation Endpoint
@@ -109,19 +115,10 @@ app.patch('/api/events/:id/attendees', verifyToken, async (req, res) => {
       res.status(500).json({ message: 'Error updating attendees', error: err.message });
   }
 });
-function verifyToken(req, res, next) {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) {
-      return res.status(403).json({ message: 'Access denied' });
-  }
 
-  try {
-      const decoded = jwt.verify(token, SECRET_KEY);
-      req.user = decoded;
-      next();
-  } catch (err) {
-      res.status(401).json({ message: 'Invalid token' });
-  }
-}
+app.set('socketio', io);
 
-module.exports = verifyToken;
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
