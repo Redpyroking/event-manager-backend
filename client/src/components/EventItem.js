@@ -23,6 +23,20 @@ function EventItem({ event, onDelete }) {
     navigate(`/edit-event/${event._id}`);
   };
 
+  const handleAttend = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      await axios.post(
+        `http://localhost:5000/api/events/${event._id}/attend`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      // The Socket.IO listener in App.js will update the attendee count in real time.
+    } catch (error) {
+      console.error('Error attending event:', error.response ? error.response.data : error.message);
+    }
+  };
+
   return (
     <div style={{ border: '1px solid #ccc', padding: '10px', margin: '10px 0' }}>
       <h3>{event.title}</h3>
@@ -31,6 +45,7 @@ function EventItem({ event, onDelete }) {
       <p>Attendees: {event.attendees ? event.attendees.length : 0}</p>
       <button onClick={handleEdit}>Edit</button>
       <button onClick={handleDelete}>Delete</button>
+      <button onClick={handleAttend}>Attend</button>
     </div>
   );
 }

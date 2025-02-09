@@ -33,6 +33,16 @@ function App() {
       );
     });
 
+    socket.on('attendeeUpdate', (updateData) => {
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event._id === updateData.eventId
+            ? { ...event, attendees: updateData.attendees }
+            : event
+        )
+      );
+    });
+
     return () => {
       socket.disconnect();
     };
@@ -57,12 +67,18 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-        <Route 
+          <Route 
             path="/" 
-            element={user ? <Dashboard events={events} user={user} setEvents={setEvents}/> : <Auth setUser={setUser} />} 
+            element={
+              user ? (
+                <Dashboard events={events} user={user} setEvents={setEvents} />
+              ) : (
+                <Auth setUser={setUser} />
+              )
+            }
           />
-        <Route path="/create-event" element={<EventForm user={user} />} />
-        <Route path="/edit-event/:id" element={<EditEventForm user={user} />} />
+          <Route path="/create-event" element={<EventForm user={user} />} />
+          <Route path="/edit-event/:id" element={<EditEventForm user={user} />} />
         </Routes>
       </div>
     </Router>

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import EventList from './EventList';
+import './Dashboard.css';
 
 function Dashboard({ events, user, setEvents }) {
   const [searchTerm, setSearchTerm] = useState('');
-
+  console.log(user,"<--");
   // Filter events based on search term (case-insensitive)
   const filteredEvents = events.filter(event =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -16,15 +17,19 @@ function Dashboard({ events, user, setEvents }) {
   };
 
   return (
-    <div>
+    <div className='dashboard'>
+      <div className='dashboard-header'>
       <h1>Event Dashboard</h1>
       <p>Welcome, {user.email}</p>
-      <Link to="/create-event">Create New Event</Link>
-      
-      <div>
+      <div className='dashboard-create'>
+      <Link to="/create-event">Add New Event +</Link>
+      </div>
+      </div>
+
+      <div className='search-container'>
         <input 
           type="text"
-          placeholder="Search events..."
+          placeholder="Search Events..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

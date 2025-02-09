@@ -18,6 +18,8 @@ app.use(cors());
 const connectDB = require('./config/db');
 connectDB();
 
+app.use('/api/upload', require('./routes/upload'));
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/events', require('./routes/events'));

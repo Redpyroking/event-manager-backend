@@ -8,6 +8,7 @@ function EventForm({ user }) {
     description: '',
     date: ''
   });
+  const [imageFile, setImageFile] = useState(null);
   const navigate = useNavigate();
 
   const { title, description, date } = formData;
@@ -15,20 +16,34 @@ function EventForm({ user }) {
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  const onFileChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      let imageUrl = '';
+      // If an image is selected, upload it to Cloudinary
+      if (imageFile) {
+        const uploadData = new FormData();
+        uploadData.append('image', imageFile);
+        const uploadRes = await axios.post('http://localhost:5000/api/upload', uploadData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        imageUrl = uploadRes.data.url;
+      }
+
+      // Include imageUrl in event data if needed
+      const eventData = { ...formData, imageUrl };
+
       const token = localStorage.getItem('token');
-      await axios.post(
-        'http://localhost:5000/api/events',
-        formData,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      await axios.post('http://localhost:5000/api/events', eventData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       navigate('/');
     } catch (error) {
-      console.error('Error creating event', error.response.data);
+      console.error('Error creating event', error.response ? error.response.data : error.message);
     }
   };
 
@@ -61,6 +76,13 @@ function EventForm({ user }) {
             value={date}
             onChange={onChange}
             required
+          />
+        </div>
+        <div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={onFileChange}
           />
         </div>
         <button type="submit">Create Event</button>

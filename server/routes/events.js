@@ -21,42 +21,29 @@ router.get('/', async (req, res) => {
 // @route   POST api/events
 // @desc    Create an event
 // @access  Private
-router.post(
-  '/',
-  [
-    auth,
-    [
-      check('title', 'Title is required').not().isEmpty(),
-      check('date', 'Valid date is required').isISO8601()
-    ]
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty())
-      return res.status(400).json({ errors: errors.array() });
-
-    const { title, description, date } = req.body;
-    try {
-      const newEvent = new Event({
-        title,
-        description,
-        date,
-        createdBy: req.user.id
-      });
-      const event = await newEvent.save();
-
-      // Emit real-time event creation
-      const io = req.app.get('socketio');
-      console.log("New event created:", event);
-      io.emit('newEvent', event);
-
-      res.json(event);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
+router.post('/:id/attend', auth, async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ msg: 'Event not found' });
     }
+    // Check if user is already in the attendees array
+    if (event.attendees.includes(req.user.id)) {
+      return res.status(400).json({ msg: 'User already attending' });
+    }
+    event.attendees.push(req.user.id);
+    await event.save();
+
+    // Emit a real-time update about the attendee change
+    const io = req.app.get('socketio');
+    io.emit('attendeeUpdate', { eventId: event._id, attendees: event.attendees });
+
+    res.json(event);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
-);
+});
 
 // @route   PUT api/events/:id
 // @desc    Update an event
