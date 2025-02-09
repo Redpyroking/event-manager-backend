@@ -8,7 +8,7 @@ function EventItem({ event, onDelete }) {
   const handleDelete = async () => {
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`http://localhost:5000/api/events/${event._id}`, {
+      await axios.delete(`https://event-manager-backend-yfbq.onrender.com/api/events/${event._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Callback to update events in parent component
@@ -27,7 +27,7 @@ function EventItem({ event, onDelete }) {
     const token = localStorage.getItem('token');
     try {
       await axios.post(
-        `http://localhost:5000/api/events/${event._id}/attend`,
+        `https://event-manager-backend-yfbq.onrender.com/api/events/${event._id}/attend`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import './EditEventForm.css';
 
 function EditEventForm({ user }) {
   const { id } = useParams();
@@ -14,7 +15,7 @@ function EditEventForm({ user }) {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/events/${id}`);
+        const res = await axios.get(`https://event-manager-backend-yfbq.onrender.com/api/events/${id}`);
         const event = res.data;
         // Format date for datetime-local input (YYYY-MM-DDTHH:mm)
         const formattedDate = new Date(event.date).toISOString().slice(0,16);
@@ -37,7 +38,7 @@ function EditEventForm({ user }) {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      await axios.put(`http://localhost:5000/api/events/${id}`, formData, {
+      await axios.put(`https://event-manager-backend-yfbq.onrender.com/api/events/${id}`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/');

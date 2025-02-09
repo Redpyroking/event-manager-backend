@@ -7,7 +7,7 @@ import EditEventForm from './components/EditEventForm';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://event-manager-backend-yfbq.onrender.com');
 
 function App() {
   const [user, setUser] = useState(null);
@@ -51,7 +51,7 @@ function App() {
   // Function to fetch events from the backend
   const fetchEvents = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/events');
+      const res = await axios.get('https://event-manager-backend-yfbq.onrender.com/api/events');
       console.log("Fetched events:", res.data); // Debug log
       setEvents(res.data);
     } catch (error) {

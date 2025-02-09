@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+import './EventForm.css';
+
 function EventForm({ user }) {
   const [formData, setFormData] = useState({
     title: '',
@@ -28,7 +30,7 @@ function EventForm({ user }) {
       if (imageFile) {
         const uploadData = new FormData();
         uploadData.append('image', imageFile);
-        const uploadRes = await axios.post('http://localhost:5000/api/upload', uploadData, {
+        const uploadRes = await axios.post('https://event-manager-backend-yfbq.onrender.com/api/upload', uploadData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         imageUrl = uploadRes.data.url;
@@ -38,7 +40,7 @@ function EventForm({ user }) {
       const eventData = { ...formData, imageUrl };
 
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/events', eventData, {
+      await axios.post('https://event-manager-backend-yfbq.onrender.com/api/events', eventData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/');

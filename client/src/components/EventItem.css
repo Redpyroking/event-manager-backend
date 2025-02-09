@@ -1,0 +1,73 @@
+
+.event-item {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: box-shadow 0.3s ease;
+  }
+  
+
+  .event-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+
+  .event-item h3 {
+    margin: 0 0 10px;
+    color: #333;
+  }
+  
+
+  .event-item p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 14px;
+  }
+  
+
+  .event-item .btn-group {
+    margin-top: 10px;
+  }
+  
+
+  .event-item button {
+    padding: 8px 12px;
+    margin-right: 8px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+
+  .event-item button.edit {
+    background-color: #28a745;
+    color: #fff;
+  }
+  
+
+  .event-item button.delete {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  
+  .event-item button.attend {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .event-item button.edit:hover {
+    background-color: #218838;
+  }
+  
+  .event-item button.delete:hover {
+    background-color: #c82333;
+  }
+  
+  .event-item button.attend:hover {
+    background-color: #0056b3;
+  }
+  
