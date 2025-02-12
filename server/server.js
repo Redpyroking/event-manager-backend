@@ -58,7 +58,7 @@ app.post('/api/events', verifyToken, async (req, res) => {
           title,
           description,
           date,
-          createdBy: req.user._id, // Assume user info from token
+          createdBy: req.user._id, 
       });
       await newEvent.save();
 
