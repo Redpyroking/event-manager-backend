@@ -4,13 +4,14 @@ const socketIo = require('socket.io');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const Event = require('./models/Event'); 
+require('dotenv').config();
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, { cors: { origin: '*' } });
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = process.env.JWT_SECRET_KEY;
+const SECRET_KEY = process.env.JWT_SECRET;
 // Middleware
 app.use(express.json());
 app.use(cors());
