@@ -53,12 +53,13 @@ io.on('connection', (socket) => {
 // Event Creation Endpoint
 app.post('/api/events', verifyToken, async (req, res) => {
   const { title, description,date } = req.body;
+  console.log(req.user)
   try {
       const newEvent = new Event({
           title,
           description,
           date,
-          createdBy: req.user.user.id, 
+          createdBy: req.user.id, 
       });
       await newEvent.save();
 
