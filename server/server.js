@@ -52,11 +52,12 @@ io.on('connection', (socket) => {
 
 // Event Creation Endpoint
 app.post('/api/events', verifyToken, async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description,date } = req.body;
   try {
       const newEvent = new Event({
           title,
           description,
+          date,
           createdBy: req.user._id, // Assume user info from token
       });
       await newEvent.save();
